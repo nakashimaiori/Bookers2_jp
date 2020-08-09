@@ -11,8 +11,6 @@
     	</div>
 
 
-
-
 <div class="newbook">
 	<h2>New book</h2>
 		<%= render 'books/new_book', book: @book %>
@@ -20,7 +18,7 @@
 </div>
 
 
-<div class="col-xs-9">
+  <div class="col-xs-9">
 	<h1>Books</h1>
 	<table class='table table-hover table-inverse'>
 		<thead>
@@ -46,8 +44,43 @@
 		</tbody>
 		<% end %>
 		</table>
-</div>
+
+  </div>
 </div>
 </div>
 </div>
 
+<div class="box">
+<% if @user == current_user %>
+  <div class="row">
+    <h2>Your MAP</h2>
+    <div id='map'></div>
+  </div>
+<% end %>
+
+<script>
+  var map;
+  var marker;
+  var geocoder;
+  function initMap() {
+     geocoder = new google.maps.Geocoder();
+    geocoder.geocode({
+        'address': "<%= @user.fruit_address %>"
+     }, function(results, status) {
+          if (status === google.maps.GeocoderStatus.OK) {
+            map = new google.maps.Map(document.getElementById('map'), {
+                  center: results[0].geometry.location,
+                 zoom: 15
+             });
+           marker = new google.maps.Marker({
+                 position: results[0].geometry.location,
+                  map: map
+             });
+       } else {
+            alert(status);
+        }
+     });
+  }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_API_KEY'] %>&callback=initMap" async defer></script>
+</div>
